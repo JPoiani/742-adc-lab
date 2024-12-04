@@ -64,7 +64,7 @@ begin
     psen <= '0';
     wait for 10 us;
     
-    for i in 1 to 2*56 loop
+    for i in 1 to 8*56 loop
         wait until falling_edge(psclk);
         psen <= '1';
         wait until falling_edge(psclk);

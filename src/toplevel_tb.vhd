@@ -53,15 +53,25 @@ signal TbClock : std_logic := '0';
 signal Unshifted_clk , ADCCLK : std_logic;
 
 begin
+
 TbClock <= not TbClock after 2.5ns; -- create a 200MHz clock for kicks, this clock is arbitrary and is just for the PSCLK
 psclk <= TbClock; -- this will be the board clock 125MHz
+reset <= '0';
 
+-- rotate the the ADC_CLK a full 360 degrees from its starting location.  Then stop rotating.
 stimuli : process
 begin
-    PSEN <= '0';
+    psen <= '0';
     wait for 10 us;
-    -- TODO : in here, write some code to create PSEN signals which will rotate the the ADC_CLK a full 360 degrees from 
-    -- its starting location.  Then stop rotating.
+    
+    for i in 1 to 2*56 loop
+        wait until falling_edge(psclk);
+        psen <= '1';
+        wait until falling_edge(psclk);
+        psen <= '0';
+        wait until falling_edge(PSDONE);
+    end loop;
+    
     wait; 
  end process;
 
